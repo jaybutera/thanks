@@ -23,7 +23,8 @@ mod b64 {
     }
 }
 
-#[derive(Debug)]
+//#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Thunk {
     text: String,
     refs: Vec<Hash>,
@@ -64,7 +65,6 @@ impl From<DagJsonThunk> for Thunk {
         Thunk {
             text: dag.text,
             refs: dag.refs.into_iter().map(|mut d| d.drain().map(|(_,v)| v).take(1).collect()).collect(),
-            //refs: dag.refs.into_values().collect(),
         }
     }
 }

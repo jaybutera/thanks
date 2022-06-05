@@ -21,8 +21,10 @@ pub fn get_thunk(hash: &Hash) -> Result<Thunk> {
         .spawn()
         .expect("Failed to run ipfs get dag");
 
-    let mut buf: String = String::from("");
-    child.stdout.unwrap().read_to_string(&mut buf)?;
-    let res: DagJsonThunk = serde_json::from_str(&buf)?;
+    //let mut buf: String = String::from("");
+    //let mut buf: Vec<u8> = String::from("");
+    //child.stdout.unwrap().read_buf(&mut buf)?;
+    child.stdout.unwrap().read()?;
+    //let res: DagJsonThunk = serde_json::from_str(&buf)?;
     Ok(res.into())
 }

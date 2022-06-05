@@ -1,4 +1,3 @@
-//use ipfs::dag::IpldDag;
 mod types;
 mod thunks;
 
