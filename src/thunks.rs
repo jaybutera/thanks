@@ -15,6 +15,7 @@ pub fn get_thesis(hash: &Hash) -> Result<Thesis> {
     Ok(res.into())
 }
 
+/*
 pub fn get_thunk(hash: &Hash) -> Result<Thunk> {
     let child = Command::new("ipfs").arg("dag").arg("get").arg(hash)
         .stdout(Stdio::piped())
@@ -24,7 +25,8 @@ pub fn get_thunk(hash: &Hash) -> Result<Thunk> {
     //let mut buf: String = String::from("");
     //let mut buf: Vec<u8> = String::from("");
     //child.stdout.unwrap().read_buf(&mut buf)?;
-    child.stdout.unwrap().read()?;
+    //child.stdout.unwrap().read()?;
     //let res: DagJsonThunk = serde_json::from_str(&buf)?;
     Ok(res.into())
 }
+*/
