@@ -2,8 +2,37 @@ use crate::types::{Hash, Thunk, Thesis, DagJsonThunk, DagJsonThesis};
 use std::{process::{Command, Stdio}, io::Read};
 use anyhow::Result;
 
-pub fn save_thunk(thunk: &Thunk) -> Result<Hash> {
-    let ser = serde_json::to_string(thunk)?.replace("\"", "\\\"");
+impl From<String> for Thunk {
+    fn from(s: String) -> Thunk {
+        Thunk {
+            text: s,
+            refs: vec![],
+        }
+    }
+}
+
+pub fn save_thesis(thesis: Thesis) -> Result<Hash> {
+    let dag_thesis = DagJsonThesis::from(thesis);
+    let ser = serde_json::to_string(&dag_thesis)?.replace("\"", "\\\"");
+    let echo = Command::new("echo").arg(format!("\"{ser}\""))
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("Failed to run echo");
+    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")//.arg(format!("\"{ser}\""))
+        .stdin(echo.stdout.unwrap())
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("Failed to run ipfs get dag");
+
+    let mut buf: String = String::from("");
+    child.stdout.unwrap().read_to_string(&mut buf)?;
+
+    Ok(buf)
+}
+
+pub fn save_thunk(thunk: Thunk) -> Result<Hash> {
+    let dag_thunk = DagJsonThunk::from(thunk);
+    let ser = serde_json::to_string(&dag_thunk)?.replace("\"", "\\\"");
     let echo = Command::new("echo").arg(format!("\"{ser}\""))
         .stdout(Stdio::piped())
         .spawn()

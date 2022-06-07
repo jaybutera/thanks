@@ -24,8 +24,7 @@ mod b64 {
     }
 }
 
-//#[derive(Debug)]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug)]
 pub struct Thunk {
     pub text: String,
     pub refs: Vec<Hash>,
@@ -61,11 +60,29 @@ impl From<DagJsonThesis> for Thesis {
     }
 }
 
+impl From<Thesis> for DagJsonThesis {
+    fn from(thesis: Thesis) -> DagJsonThesis {
+        DagJsonThesis {
+            name: thesis.name,
+            refs: thesis.refs.into_iter().map(|h| HashMap::from([(String::from("/"), h)])).collect(),
+        }
+    }
+}
+
 impl From<DagJsonThunk> for Thunk {
     fn from(dag: DagJsonThunk) -> Thunk {
         Thunk {
             text: dag.text,
             refs: dag.refs.into_iter().map(|mut d| d.drain().map(|(_,v)| v).take(1).collect()).collect(),
+        }
+    }
+}
+
+impl From<Thunk> for DagJsonThunk {
+    fn from(thunk: Thunk) -> DagJsonThunk {
+        DagJsonThunk {
+            text: thunk.text,
+            refs: thunk.refs.into_iter().map(|h| HashMap::from([(String::from("/"), h)])).collect(),
         }
     }
 }
