@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use serde_json::Result;
 use serde::{Serialize, Deserialize};
+
 pub type Hash = String;
 
 mod b64 {
@@ -26,14 +27,14 @@ mod b64 {
 //#[derive(Debug)]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Thunk {
-    text: String,
-    refs: Vec<Hash>,
+    pub text: String,
+    pub refs: Vec<Hash>,
 }
 
 #[derive(Debug)]
 pub struct Thesis {
-    name: String,
-    refs: Vec<Hash>,
+    pub name: String,
+    pub refs: Vec<Hash>,
 }
 
 type IpldLink = HashMap<String, Hash>;
