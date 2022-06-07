@@ -1,11 +1,27 @@
 use serde::{Serialize, Deserialize};
 use std::fs::File;
 use types::Thunk;
+use structopt::StructOpt;
+use std::path::PathBuf;
+use anyhow::Result;
 
 mod types;
 mod thunks;
+mod opts;
+
+fn parse_notes(file: PathBuf) -> Result<Vec<String>> {
+    let content = std::fs::read_to_string(file)?;
+    Ok( content.split("\n\n").map(|s| s.to_string()).collect::<Vec<_>>() )
+}
 
 fn main() {
+    let opt = opts::Opt::from_args();
+
+    if let Some(filepath) = opt.import {
+        let notes = parse_notes(filepath);
+        println!("{notes:?}");
+    }
+
     let thunk = Thunk {
         text: "Terracotta soldier".into(),
         refs: vec![],
