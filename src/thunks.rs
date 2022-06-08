@@ -12,14 +12,14 @@ impl From<String> for Thunk {
 }
 
 pub fn save_thesis(thesis: Thesis) -> Result<Hash> {
+    let path_str = format!("/tmp/{}", thesis.name);
     let dag_thesis = DagJsonThesis::from(thesis);
-    let ser = serde_json::to_string(&dag_thesis)?.replace("\"", "\\\"");
-    let echo = Command::new("echo").arg(format!("\"{ser}\""))
-        .stdout(Stdio::piped())
-        .spawn()
-        .expect("Failed to run echo");
-    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")//.arg(format!("\"{ser}\""))
-        .stdin(echo.stdout.unwrap())
+    let ser = serde_json::to_string(&dag_thesis)?;
+    println!("{ser}");
+    let tmppath = std::path::Path::new(&path_str);
+    std::fs::write(tmppath, ser)?;
+
+    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true").arg(&path_str)
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to run ipfs get dag");
@@ -32,12 +32,12 @@ pub fn save_thesis(thesis: Thesis) -> Result<Hash> {
 
 pub fn save_thunk(thunk: Thunk) -> Result<Hash> {
     let dag_thunk = DagJsonThunk::from(thunk);
-    let ser = serde_json::to_string(&dag_thunk)?.replace("\"", "\\\"");
-    let echo = Command::new("echo").arg(format!("\"{ser}\""))
+    let ser = serde_json::to_string(&dag_thunk)?;
+    let echo = Command::new("echo").arg(ser)
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to run echo");
-    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")//.arg(format!("\"{ser}\""))
+    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")
         .stdin(echo.stdout.unwrap())
         .stdout(Stdio::piped())
         .spawn()
@@ -57,12 +57,13 @@ pub fn get_thesis(hash: &Hash) -> Result<Thesis> {
 
     let mut buf: String = String::from("");
     child.stdout.unwrap().read_to_string(&mut buf)?;
-    println!("{buf}");
-    let res: DagJsonThesis = serde_json::from_str(&buf)?;
+    let t = buf.replace("\\", "");
+    println!("{t}");
+    let res: DagJsonThesis = serde_json::from_str(&t)?;
+    println!("mortal men");
     Ok(res.into())
 }
 
-/*
 pub fn get_thunk(hash: &Hash) -> Result<Thunk> {
     let child = Command::new("ipfs").arg("dag").arg("get").arg(hash)
         .stdout(Stdio::piped())
@@ -74,6 +75,9 @@ pub fn get_thunk(hash: &Hash) -> Result<Thunk> {
     //child.stdout.unwrap().read_buf(&mut buf)?;
     //child.stdout.unwrap().read()?;
     //let res: DagJsonThunk = serde_json::from_str(&buf)?;
+    //Ok(res.into())
+    let mut buf: String = String::from("");
+    child.stdout.unwrap().read_to_string(&mut buf)?;
+    let res: DagJsonThunk = serde_json::from_str(&buf)?;
     Ok(res.into())
 }
-*/

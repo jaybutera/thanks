@@ -5,4 +5,7 @@ use structopt::StructOpt;
 pub struct Opt {
     #[structopt(short, long)]
     pub import: Option<PathBuf>,
+
+    #[structopt(short, long)]
+    pub thesis: Option<String>,
 }

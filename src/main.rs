@@ -43,6 +43,12 @@ fn main() {
             }
             Err(e) => println!("{e}"),
         }
+    } else if let Some(thesis_name) = opt.thesis {
+        // TODO wrap up the unwraps
+        let index = get_index().unwrap();
+        let hash  = index.theses.get(&thesis_name).unwrap();
+        let thesis = thunks::get_thesis(hash).unwrap();
+        println!("{thesis}");
     }
 
     let thunk = Thunk {

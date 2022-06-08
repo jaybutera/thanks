@@ -1,3 +1,4 @@
+use std::fmt;
 use std::collections::HashMap;
 use serde_json::Result;
 use serde::{Serialize, Deserialize};
@@ -84,6 +85,18 @@ impl From<Thunk> for DagJsonThunk {
             text: thunk.text,
             refs: thunk.refs.into_iter().map(|h| HashMap::from([(String::from("/"), h)])).collect(),
         }
+    }
+}
+
+impl fmt::Display for Thesis {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}\n", self.name)?;
+        for (i, hash) in self.refs.iter().enumerate() {
+            let thunk = crate::thunks::get_thunk(hash).unwrap();
+            write!(f, "[{}]\n{}\n\n", i, thunk.text)?;
+        }
+
+        Ok(())
     }
 }
 
