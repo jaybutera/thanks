@@ -87,6 +87,12 @@ impl From<Thunk> for DagJsonThunk {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Index {
+    pub theses: HashMap<String, Hash>,
+}
+
+/*
 pub fn thesis_to_dagjson(thesis: Thesis) -> Result<String> {
     let dj = DagJsonThesis {
         name: thesis.name,
@@ -104,3 +110,4 @@ pub fn thunk_to_dagjson(thunk: Thunk) -> Result<String> {
 
     serde_json::to_string(&dj)
 }
+*/

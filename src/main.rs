@@ -1,13 +1,15 @@
 use serde::{Serialize, Deserialize};
 use std::fs::File;
-use types::{Hash, Thunk, Thesis};
+use types::{Index, Hash, Thunk, Thesis};
 use structopt::StructOpt;
 use std::path::PathBuf;
 use anyhow::Result;
+use index::{get_index, save_index};
 
 mod types;
 mod thunks;
 mod opts;
+mod index;
 
 fn parse_notes(file: PathBuf) -> Result<Vec<String>> {
     let content = std::fs::read_to_string(file)?;
@@ -26,9 +28,16 @@ fn main() {
 
                 let name = filepath.file_stem().unwrap().to_string_lossy();
                 let thesis_hash = thunks::save_thesis(Thesis {
-                    name: name.into(),
+                    name: name.clone().into(),
                     refs: hashes,
                 }).expect("Failed to save thesis");
+
+                // Update thesis pointer in index
+                let mut index = get_index()
+                    .expect("Failed to get index");
+                index.theses.insert(name.into(), thesis_hash.clone());
+                save_index(index)
+                    .expect("Failed to save index");
 
                 println!("{thesis_hash}");
             }
