@@ -1,3 +1,4 @@
+```
 Complex ideas, deep beliefs and theories are not brought into existence in one
 Eureka moment. Our most creative thoughts are often the most spontaneous.
 They come to mind in unexpected moments.
@@ -46,3 +47,4 @@ well if you feel like you are simply going through the thought process. No
 overhead concerning yourself with documents structures. Simply write down your
 thoughts free form, or aggregate disparate thunks when researching, or make
 comments on a branch of thunks you made last week, or that a friend made.
+```
