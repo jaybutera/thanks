@@ -15,7 +15,6 @@ pub fn save_thesis(thesis: Thesis) -> Result<Hash> {
     let path_str = format!("/tmp/{}", thesis.name);
     let dag_thesis = DagJsonThesis::from(thesis);
     let ser = serde_json::to_string(&dag_thesis)?;
-    println!("{ser}");
     let tmppath = std::path::Path::new(&path_str);
     std::fs::write(tmppath, ser)?;
 
@@ -37,7 +36,7 @@ pub fn save_thunk(thunk: Thunk) -> Result<Hash> {
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to run echo");
-    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")
+    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true").arg("--store-codec=dag-json")
         .stdin(echo.stdout.unwrap())
         .stdout(Stdio::piped())
         .spawn()
@@ -58,9 +57,7 @@ pub fn get_thesis(hash: &Hash) -> Result<Thesis> {
     let mut buf: String = String::from("");
     child.stdout.unwrap().read_to_string(&mut buf)?;
     let t = buf.replace("\\", "");
-    println!("{t}");
     let res: DagJsonThesis = serde_json::from_str(&t)?;
-    println!("mortal men");
     Ok(res.into())
 }
 
