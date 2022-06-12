@@ -5,11 +5,13 @@ use structopt::StructOpt;
 use std::path::PathBuf;
 use anyhow::Result;
 use index::{get_index, save_index};
+use grammar::parser;
 
 mod types;
 mod thunks;
 mod opts;
 mod index;
+mod grammar;
 
 fn parse_notes(file: PathBuf) -> Result<Vec<String>> {
     let content = std::fs::read_to_string(file)?;

@@ -105,22 +105,12 @@ pub struct Index {
     pub theses: HashMap<String, Hash>,
 }
 
-/*
-pub fn thesis_to_dagjson(thesis: Thesis) -> Result<String> {
-    let dj = DagJsonThesis {
-        name: thesis.name,
-        refs: thesis.refs.into_iter().map(|h| HashMap::from([(String::from("/"), h)])).collect(),
-    };
-
-    serde_json::to_string(&dj)
+pub struct ThesisTree {
+    pub name: String,
+    pub thunks: Vec<Thunk>,
 }
 
-pub fn thunk_to_dagjson(thunk: Thunk) -> Result<String> {
-    let dj = DagJsonThunk {
-        text: thunk.text,
-        refs: thunk.refs.into_iter().map(|h| HashMap::from([(String::from("/"), h)])).collect(),
-    };
-
-    serde_json::to_string(&dj)
+pub struct Ast {
+    pub refs: Vec<Hash>,
+    pub theses: Vec<ThesisTree>,
 }
-*/
