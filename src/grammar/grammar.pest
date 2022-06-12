@@ -1,16 +1,16 @@
-title_tag = {"#"}
-alias_tag = {"@"}
-hash_tag  = {"!"}
-separator = {"---" ~ "-"*}
+title_tag = _{"#"}
+alias_tag = _{"@"}
+hash_tag  = _{"!"}
+separator = _{NEWLINE ~ "---" ~ "-"*}
 
-thesis_title = { ASCII_ALPHA_LOWER }
+thesis_title = _{ ASCII_ALPHA_LOWER }
 alias        = { ASCII_ALPHA_LOWER }
 hash         = { ASCII_ALPHANUMERIC }
 
-reference = { title_tag ~ thesis_title ~ alias_tag ~ alias ~ hash_tag ~ hash }
-thesis_header = { thesis_title ~ NEWLINE ~ separator }
+reference = { (title_tag ~ thesis_title)? ~ alias_tag ~ alias ~ hash_tag ~ hash }
+thesis_header = { thesis_title ~ separator }
 
-thunk_refs = { "*" ~ NUMBER+ }
+thunk_refs = { "*" ~ !(NUMBER+ ~ alias) }
 text_block = @{ANY+ ~ NEWLINE ~ NEWLINE }
 
 thunk = { thunk_refs ~ NEWLINE ~ text_block }

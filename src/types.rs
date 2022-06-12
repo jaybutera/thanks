@@ -104,13 +104,3 @@ impl fmt::Display for Thesis {
 pub struct Index {
     pub theses: HashMap<String, Hash>,
 }
-
-pub struct ThesisTree {
-    pub name: String,
-    pub thunks: Vec<Thunk>,
-}
-
-pub struct Ast {
-    pub refs: Vec<Hash>,
-    pub theses: Vec<ThesisTree>,
-}

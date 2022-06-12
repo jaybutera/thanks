@@ -22,6 +22,10 @@ fn main() {
     let opt = opts::Opt::from_args();
 
     if let Some(filepath) = opt.import {
+        let content = std::fs::read_to_string(filepath.clone()).expect("Couldn't open file");
+        let res = parser::parse_doc(&content, &filepath);
+        println!("{res:?}");
+        /*
         match parse_notes(filepath.clone()) {
             Ok(notes) => {
                 let hashes: Vec<Hash> = notes.into_iter()
@@ -45,6 +49,7 @@ fn main() {
             }
             Err(e) => println!("{e}"),
         }
+        */
     } else if let Some(thesis_name) = opt.thesis {
         // TODO wrap up the unwraps
         let index = get_index().unwrap();
