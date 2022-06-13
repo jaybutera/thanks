@@ -1,4 +1,5 @@
 use crate::types::Hash;
+use crate::grammar::context::Ctx;
 
 #[derive(Debug)]
 pub struct Reference {
@@ -16,11 +17,11 @@ pub struct ThunkAst {
 #[derive(Debug)]
 pub struct ThesisAst {
     pub name: String,
-    pub thunks: Vec<ThunkAst>,
+    pub thunks: Vec<Ctx<ThunkAst>>,
 }
 
 #[derive(Debug)]
 pub struct Ast {
-    pub refs: Vec<Reference>,
-    pub theses: Vec<ThesisAst>,
+    pub refs: Vec<Ctx<Reference>>,
+    pub theses: Vec<Ctx<ThesisAst>>,
 }

@@ -1,20 +1,25 @@
 title_tag = _{"#"}
 alias_tag = _{"@"}
 hash_tag  = _{"!"}
-separator = _{NEWLINE ~ "---" ~ "-"*}
+separator = _{"---"}
 
-thesis_title = _{ ASCII_ALPHA_LOWER }
-alias        = { ASCII_ALPHA_LOWER }
-hash         = { ASCII_ALPHANUMERIC }
+thesis_title = _{ ASCII_ALPHA_LOWER+ }
+alias        = { ASCII_ALPHA_LOWER+ }
+hash         = { ASCII_ALPHANUMERIC+ }
 
 reference = { (title_tag ~ thesis_title)? ~ alias_tag ~ alias ~ hash_tag ~ hash }
+//reference = { alias_tag ~ alias ~ hash_tag ~ hash }
 thesis_header = { thesis_title ~ separator }
 
 thunk_refs = { "*" ~ !(NUMBER+ ~ alias) }
-text_block = @{ANY+ ~ NEWLINE ~ NEWLINE }
+text_block = @{ANY+}
 
-thunk = { thunk_refs ~ NEWLINE ~ text_block }
+thunk = { thunk_refs? ~ (text_block ~ NEWLINE ~ NEWLINE)* ~ text_block }
 
 thesis = { thesis_header ~ thunk+ }
 
 document = { SOI ~ reference* ~ thesis+ ~ EOI }
+//document = { SOI ~ thesis ~ EOI }
+
+WHITESPACE = _{" " | "\t" | "\n"}
+COMMENT = _{ "#" ~ (!"\n" ~ ANY)* ~ "\n" }

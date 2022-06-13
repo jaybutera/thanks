@@ -23,8 +23,10 @@ fn main() {
 
     if let Some(filepath) = opt.import {
         let content = std::fs::read_to_string(filepath.clone()).expect("Couldn't open file");
-        let res = parser::parse_doc(&content, &filepath);
-        println!("{res:?}");
+        match parser::parse_doc(&content, &filepath) {
+            Err(e) => println!("{e}"),
+            Ok(ast) => println!("{ast:?}"),
+        };
         /*
         match parse_notes(filepath.clone()) {
             Ok(notes) => {
