@@ -1,25 +1,33 @@
-title_tag = _{"#"}
-alias_tag = _{"@"}
-hash_tag  = _{"!"}
-separator = _{"---"}
+alias_tag  = _{"@"}
+hashref_tag  = _{"!"}
+separator  = _{"---"}
+whitespace = _{" " | "\t" | NEWLINE}
+spaces     = _{" " | "\t"}
+newline_spaces = _{ NEWLINE ~ whitespace* }
 
 thesis_title = _{ ASCII_ALPHA_LOWER+ }
 alias        = { ASCII_ALPHA_LOWER+ }
 hash         = { ASCII_ALPHANUMERIC+ }
 
-reference = { (title_tag ~ thesis_title)? ~ alias_tag ~ alias ~ hash_tag ~ hash }
-//reference = { alias_tag ~ alias ~ hash_tag ~ hash }
-thesis_header = { thesis_title ~ separator }
+reference = { alias_tag   ~ spaces+ ~ alias ~ NEWLINE
+            ~ hashref_tag ~ spaces+ ~ hash  ~ NEWLINE }
 
-thunk_refs = { "*" ~ !(NUMBER+ ~ alias) }
+thesis_header = { thesis_title ~ NEWLINE
+                ~ separator    ~ NEWLINE }
+
+thunk_refs = { "*" ~ spaces+ ~ NUMBER+ ~ alias ~ NEWLINE }
 text_block = @{ANY+}
 
-thunk = { thunk_refs? ~ (text_block ~ NEWLINE ~ NEWLINE)* ~ text_block }
+thunk = { (thunk_refs ~ newline_spaces+)?
+        ~ (text_block ~ NEWLINE ~ NEWLINE ~ newline_spaces*)*
+        ~ text_block ~ newline_spaces* }
 
-thesis = { thesis_header ~ thunk+ }
+thesis = { thesis_header ~ newline_spaces*
+         ~ (thunk ~ newline_spaces+)*
+         ~ thunk }
 
-document = { SOI ~ reference* ~ thesis+ ~ EOI }
-//document = { SOI ~ thesis ~ EOI }
+document = { SOI ~ (reference ~ whitespace*)*
+                 ~ (thesis    ~ whitespace*)+
+            ~ EOI }
 
-WHITESPACE = _{" " | "\t" | "\n"}
 COMMENT = _{ "#" ~ (!"\n" ~ ANY)* ~ "\n" }
