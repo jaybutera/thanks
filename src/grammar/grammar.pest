@@ -4,6 +4,7 @@ separator  = _{"---"}
 whitespace = _{" " | "\t" | NEWLINE}
 spaces     = _{" " | "\t"}
 newline_spaces = _{ NEWLINE ~ whitespace* }
+number = { NUMBER+ }
 
 thesis_title = _{ ASCII_ALPHA_LOWER+ }
 alias        = { ASCII_ALPHA_LOWER+ }
@@ -15,19 +16,20 @@ reference = { alias_tag   ~ spaces+ ~ alias ~ NEWLINE
 thesis_header = { thesis_title ~ NEWLINE
                 ~ separator    ~ NEWLINE }
 
-thunk_refs = { "*" ~ spaces+ ~ NUMBER+ ~ alias ~ NEWLINE }
-text_block = @{ANY+}
+thunk_refs = { "*" ~ spaces+ ~ number ~ alias ~ NEWLINE }
+text_block = @{ (!(NEWLINE ~ newline_spaces | EOI) ~ ANY)+ }
+//text_block = @{ (ASCII_ALPHA | NEWLINE)+ ~ NEWLINE ~ newline_spaces+ }
 
-thunk = { (thunk_refs ~ newline_spaces+)?
-        ~ (text_block ~ NEWLINE ~ NEWLINE ~ newline_spaces*)*
-        ~ text_block ~ newline_spaces* }
+thunk = { (thunk_refs ~ newline_spaces*)?
+        //~ (text_block ~ NEWLINE ~ NEWLINE ~ newline_spaces*)*
+        ~ text_block }
 
 thesis = { thesis_header ~ newline_spaces*
          ~ (thunk ~ newline_spaces+)*
          ~ thunk }
 
 document = { SOI ~ (reference ~ whitespace*)*
-                 ~ (thesis    ~ whitespace*)+
-            ~ EOI }
+                 ~ (thesis    ~ whitespace*)+ }
+            //~ EOI }
 
 COMMENT = _{ "#" ~ (!"\n" ~ ANY)* ~ "\n" }

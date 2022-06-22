@@ -1,5 +1,6 @@
 use crate::types::Hash;
 use crate::grammar::context::Ctx;
+use internment::Intern;
 
 #[derive(Debug)]
 pub struct Reference {
@@ -9,8 +10,7 @@ pub struct Reference {
 
 #[derive(Debug)]
 pub struct ThunkAst {
-    pub alias: String,
-    pub number: u32,
+    pub refs: Ctx<Vec<(u64, Intern<String>)>>,
     pub text: String,
 }
 

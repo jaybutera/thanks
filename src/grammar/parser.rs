@@ -2,6 +2,7 @@ use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
 use std::path::Path;
 use anyhow::Context;
+use internment::Intern;
 use crate::grammar::{
     context::{Ctx, ToCtx, CtxLocation, CtxResult, ToCtxErr, FileId},
     types::{Reference, ThesisAst, ThunkAst, Ast},
@@ -12,9 +13,9 @@ use crate::grammar::{
 struct RawParser;
 
 pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<Ast>> {
-    let source = internment::Intern::new(root.to_str().unwrap().into());
+    let source = Intern::new(root.to_str().unwrap().into());
     let root_ctx = CtxLocation {
-        source: internment::Intern::new(root.to_str().unwrap().into()),
+        source: Intern::new(root.to_str().unwrap().into()),
         start_offset: 0,
         end_offset: 0,
     };
@@ -58,7 +59,7 @@ pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<Ast>> {
         .collect();
 
     let theses: Vec<Ctx<ThesisAst>> = children.iter()
-        .filter(|child| child.as_rule() == Rule::reference)
+        .filter(|child| child.as_rule() == Rule::thesis)
         .map(|child| parse_thesis(child.clone(), source))
         .collect();
 
@@ -97,11 +98,26 @@ fn parse_thunk(pair: Pair<Rule>, source: FileId) -> Ctx<ThunkAst> {
     let ctx = p2ctx(&pair, source);
     let mut children = pair.into_inner();
 
+    let refs = parse_thunk_refs(children.next().unwrap(), source);
+
     ThunkAst {
-        alias: children.next().unwrap().as_str().into(),
-        number: children.next().unwrap().as_str().parse().unwrap(),
+        refs,
         text: children.next().unwrap().as_str().into(),
     }.with_ctx(ctx)
+}
+
+fn parse_thunk_refs(pair: Pair<Rule>, source: FileId) -> Ctx<Vec<(u64, Intern<String>)>> {
+    let ctx = p2ctx(&pair, source);
+    let children = pair.into_inner().collect::<Vec<_>>();
+
+    let mut refs = vec![];
+    for pair in children.chunks(2) {
+        let alias: Intern<String> = Intern::new(pair[1].as_str().into());
+        let number: u64 = pair[0].as_str().parse().unwrap();
+        refs.push((number, alias));
+    }
+
+    refs.with_ctx(ctx)
 }
 
 fn p2ctx(pair: &Pair<Rule>, source: FileId) -> CtxLocation {
