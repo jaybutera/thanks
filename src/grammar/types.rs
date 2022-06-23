@@ -25,7 +25,7 @@ pub struct ThesisAst {
     pub thunks: Vec<Ctx<ThunkAst>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RawAst {
     //pub refs: Vec<Ctx<Reference>>,
     pub refs: RefMap,

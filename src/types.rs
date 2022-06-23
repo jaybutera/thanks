@@ -25,7 +25,7 @@ mod b64 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Thunk {
     pub text: String,
     pub refs: Vec<Hash>,

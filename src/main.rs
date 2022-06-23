@@ -26,7 +26,13 @@ fn main() {
         let content = std::fs::read_to_string(filepath.clone()).expect("Couldn't open file");
         match parser::parse_doc(&content, &filepath) {
             Err(e) => println!("{e}"),
-            Ok(ast) => println!("{ast:?}"),
+            Ok(ast) => {
+                let thunks = ast::thunks((*ast).clone()).unwrap();
+                for t in thunks.iter() {
+                    thunks::save_thunk(t.clone()).unwrap();
+                }
+                println!("{thunks:?}");
+            },
         };
         /*
         match parse_notes(filepath.clone()) {
