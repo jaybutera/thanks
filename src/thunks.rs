@@ -36,8 +36,9 @@ pub fn save_thunk(thunk: Thunk) -> Result<Hash> {
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to run echo");
+    //println!("{:?}", std::str::from_utf8(&echo.stdout.unwrap()));
 
-    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true").arg("--store-codec=dag-json")
+    let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true")//.arg("--store-codec=dag-json")
         .stdin(echo.stdout.unwrap())
         .output()?;
 
