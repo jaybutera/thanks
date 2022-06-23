@@ -1,3 +1,3 @@
 mod context;
-mod types;
+pub mod types;
 pub mod parser;

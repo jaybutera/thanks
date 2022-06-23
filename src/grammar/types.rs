@@ -1,12 +1,17 @@
 use crate::types::Hash;
 use crate::grammar::context::Ctx;
 use internment::Intern;
+use std::collections::HashMap;
 
+/*
 #[derive(Debug)]
 pub struct Reference {
     pub alias: String,
     pub hash: Hash,
 }
+*/
+
+pub type RefMap = HashMap<Intern<String>, Hash>;
 
 #[derive(Debug)]
 pub struct ThunkAst {
@@ -21,7 +26,8 @@ pub struct ThesisAst {
 }
 
 #[derive(Debug)]
-pub struct Ast {
-    pub refs: Vec<Ctx<Reference>>,
+pub struct RawAst {
+    //pub refs: Vec<Ctx<Reference>>,
+    pub refs: RefMap,
     pub theses: Vec<Ctx<ThesisAst>>,
 }

@@ -7,6 +7,7 @@ use anyhow::Result;
 use index::{get_index, save_index};
 use grammar::parser;
 
+mod ast;
 mod types;
 mod thunks;
 mod opts;

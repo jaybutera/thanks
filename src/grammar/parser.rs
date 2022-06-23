@@ -3,23 +3,18 @@ use pest_derive::Parser;
 use std::path::Path;
 use anyhow::Context;
 use internment::Intern;
+use crate::types::Hash;
 use crate::grammar::{
-    context::{Ctx, ToCtx, CtxLocation, CtxResult, ToCtxErr, FileId},
-    types::{Reference, ThesisAst, ThunkAst, Ast},
+    context::{Ctx, ToCtx, CtxLocation, CtxResult, FileId},
+    types::{RefMap, ThesisAst, ThunkAst, RawAst},
 };
 
 #[derive(Parser)]
 #[grammar = "grammar/grammar.pest"]
 struct RawParser;
 
-pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<Ast>> {
+pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<RawAst>> {
     let source = Intern::new(root.to_str().unwrap().into());
-    let root_ctx = CtxLocation {
-        source: Intern::new(root.to_str().unwrap().into()),
-        start_offset: 0,
-        end_offset: 0,
-    };
-
     let pair = RawParser::parse(Rule::document, input)
         .map_err(|err| {
             let location = err.location.clone();
@@ -53,9 +48,10 @@ pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<Ast>> {
     let ctx = p2ctx(&pair, source);
     let children: Vec<_> = pair.into_inner().collect();
 
-    let refs: Vec<Ctx<Reference>> = children.iter()
+    let refs: RefMap = children.iter()
         .filter(|child| child.as_rule() == Rule::reference)
-        .map(|child| parse_reference(child.clone(), source))
+        // TODO don't just discard the context
+        .map(|child| (*parse_reference(child.clone(), source)).clone())
         .collect();
 
     let theses: Vec<Ctx<ThesisAst>> = children.iter()
@@ -63,20 +59,20 @@ pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<Ast>> {
         .map(|child| parse_thesis(child.clone(), source))
         .collect();
 
-    Ok(Ast {
+    Ok(RawAst {
         refs,
         theses,
     }.with_ctx(ctx))
 }
 
-fn parse_reference(pair: Pair<Rule>, source: FileId) -> Ctx<Reference> {
+fn parse_reference(pair: Pair<Rule>, source: FileId) -> Ctx<(Intern<String>, Hash)> {
     let ctx = p2ctx(&pair, source);
     let mut children = pair.into_inner();
 
-    Reference {
-        alias: children.next().unwrap().as_str().into(),
-        hash: children.next().unwrap().as_str().into(),
-    }.with_ctx(ctx)
+    let alias: Intern<String> = Intern::new(children.next().unwrap().as_str().into());
+    let hash: Hash  = children.next().unwrap().as_str().into();
+
+    (alias, hash).with_ctx(ctx)
 }
 
 fn parse_thesis(pair: Pair<Rule>, source: FileId) -> Ctx<ThesisAst> {
