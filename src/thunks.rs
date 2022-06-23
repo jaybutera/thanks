@@ -1,6 +1,6 @@
 use crate::types::{Hash, Thunk, Thesis, DagJsonThunk, DagJsonThesis};
 use std::{process::{Command, Stdio}, io::Read};
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 
 impl From<String> for Thunk {
     fn from(s: String) -> Thunk {
@@ -36,16 +36,16 @@ pub fn save_thunk(thunk: Thunk) -> Result<Hash> {
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to run echo");
+
     let child = Command::new("ipfs").arg("dag").arg("put").arg("--pin=true").arg("--store-codec=dag-json")
         .stdin(echo.stdout.unwrap())
-        .stdout(Stdio::piped())
-        .spawn()
-        .expect("Failed to run ipfs get dag");
+        .output()?;
 
-    let mut buf: String = String::from("");
-    child.stdout.unwrap().read_to_string(&mut buf)?;
-
-    Ok(buf)
+    if child.stderr.len() > 0 {
+        Err(anyhow!("{}", std::str::from_utf8(&child.stderr).unwrap().to_string()))
+    } else {
+        Ok(std::str::from_utf8(&child.stdout).unwrap().to_string())
+    }
 }
 
 pub fn get_thesis(hash: &Hash) -> Result<Thesis> {

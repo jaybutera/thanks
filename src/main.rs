@@ -29,9 +29,10 @@ fn main() {
             Ok(ast) => {
                 let thunks = ast::thunks((*ast).clone()).unwrap();
                 for t in thunks.iter() {
-                    thunks::save_thunk(t.clone()).unwrap();
+                    let hash = thunks::save_thunk(t.clone()).unwrap();
+                    println!("Saved thunk {hash}");
                 }
-                println!("{thunks:?}");
+                //println!("{thunks:?}");
             },
         };
         /*
