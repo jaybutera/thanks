@@ -18,7 +18,6 @@ thesis_header = { thesis_title ~ NEWLINE
 
 thunk_refs = { "*" ~ spaces+ ~ number ~ alias ~ NEWLINE }
 text_block = @{ (!(NEWLINE ~ newline_spaces | EOI) ~ ANY)+ }
-//text_block = @{ (ASCII_ALPHA | NEWLINE)+ ~ NEWLINE ~ newline_spaces+ }
 
 thunk = { (thunk_refs ~ newline_spaces*)?
         //~ (text_block ~ NEWLINE ~ NEWLINE ~ newline_spaces*)*

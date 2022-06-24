@@ -43,6 +43,7 @@ pub fn parse_doc(input: &str, root: &Path) -> CtxResult<Ctx<RawAst>> {
         .context("no pairs produced in parser")?;
         //.err_ctx(Some(root_ctx))?;
 
+    println!("{pair:?}");
     assert_eq!(pair.as_rule(), Rule::document);
 
     let ctx = p2ctx(&pair, source);
