@@ -1,0 +1,25 @@
+# sovereign_individual
+@ s
+! bafyreidn4r2qo26ykzeuxqfnaqcdzvfyx7ssuivogb5apduq6q7ryj3smm
+
+# ocalan_civilization
+@ oc
+! bafyreidn4r2qo26ykzeuxqfnaqcdzvfyx7ssuivogb5apduq6q7ryj3smm
+
+developeruserloop
+---
+
+* 21s
+While not everyone could read and write, the printing press still affected the
+illiterate by enabling more people to spread messages among those that could
+read. And the readers spread ideas through speech.
+
+The printing press tightened the connection between users (literate or
+illiterate people that recieved information from books) and writers. More
+people could write a book than before.
+
+also
+---
+
+* 0d
+Also want to mention something else.
