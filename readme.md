@@ -13,12 +13,12 @@ Polished and complete concepts are the product of the natural thought process.
 They are a combination of logical iteration and creative connection between
 seemingly unrelated concepts.
 
-As you go through this thought process, you write your thoughts so as to
+Through this thought process, you may write thoughts so as to
 preserve them beyond the sandy beaches of your own brain's memory. But
-documents are not so flexible, don't share the same indexing and
+documents are not so flexible. They don't share the same indexing and
 non-linearity as the mind.
 
-So the thoughts become stale. Difficult to reference and draw connections. Only
+The thoughts become stale. Difficult to reference and draw connections. Only
 those with discipline and their own systems of organization are able to draw
 conclusions and formulate abstract concepts from the mess and mass of data in
 their mind.
@@ -34,6 +34,8 @@ which derives from existing notions.
 
 Therefore thunks may reference other thunks. Forming an explicit graph of
 interconnections between branching trees of thoughts and concepts.
+
+Thus emerges a network or internetwork of thoughts and ideas.
 
 By adopting the discipline of dividing thoughts into discrete peices, so that
 each peice is individually referencable, a high-precision graph of knowledge
